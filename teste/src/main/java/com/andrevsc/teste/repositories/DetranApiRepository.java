@@ -1,0 +1,5 @@
+package com.andrevsc.teste.repositories;
+
+public interface DetranApiRepository {
+    
+}
