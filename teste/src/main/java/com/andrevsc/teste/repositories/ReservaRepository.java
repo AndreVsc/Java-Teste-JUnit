@@ -23,4 +23,8 @@ public class ReservaRepository {
     public void clear() {
         store.clear();
     }
+
+    public java.util.List<Reserva> findAll() {
+        return new java.util.ArrayList<>(store.values());
+    }
 }

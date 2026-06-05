@@ -100,4 +100,13 @@ public class ReservaService {
         if (request.getPagamento() == null)
             throw new IllegalArgumentException("Dados de pagamento são obrigatórios.");
     }
+
+    public Reserva obterPorId(String id) {
+        return reservaRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: " + id));
+    }
+
+    public java.util.List<Reserva> listarTodas() {
+        return reservaRepository.findAll();
+    }
 }
