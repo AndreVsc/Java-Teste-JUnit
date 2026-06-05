@@ -1,4 +1,4 @@
-package com.andrevsc.teste.integration;
+package com.andrevsc.teste.controllers;
 
 import com.andrevsc.teste.dtos.PagamentoDTO;
 import com.andrevsc.teste.dtos.ReservaRequestDTO;

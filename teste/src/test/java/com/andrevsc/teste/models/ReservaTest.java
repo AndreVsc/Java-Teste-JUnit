@@ -1,8 +1,5 @@
-package com.andrevsc.teste.units.models;
+package com.andrevsc.teste.models;
 
-import com.andrevsc.teste.models.Carro;
-import com.andrevsc.teste.models.Cliente;
-import com.andrevsc.teste.models.Reserva;
 import com.andrevsc.teste.models.enums.StatusReserva;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,10 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.services;
 
 import com.andrevsc.teste.dtos.PagamentoDTO;
 import com.andrevsc.teste.exceptions.PagamentoRecusadoException;
 import com.andrevsc.teste.models.Pagamento;
 import com.andrevsc.teste.models.enums.FormaPagamento;
 import com.andrevsc.teste.repositories.PagamentoApiRepository;
-import com.andrevsc.teste.services.PagamentoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

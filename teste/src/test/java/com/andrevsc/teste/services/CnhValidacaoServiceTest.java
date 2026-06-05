@@ -1,8 +1,7 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.services;
 
 import com.andrevsc.teste.exceptions.CnhInvalidaException;
 import com.andrevsc.teste.repositories.DetranApiRepository;
-import com.andrevsc.teste.services.CnhValidacaoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
