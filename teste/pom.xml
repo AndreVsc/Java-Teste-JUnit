@@ -106,6 +106,9 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.14</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/jacoco-html</outputDirectory>
+                </configuration>
                 <executions>
                     <!-- Prepara o agente antes dos testes rodarem -->
                     <execution>
