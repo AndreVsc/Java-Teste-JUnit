@@ -1,5 +1,7 @@
 package com.andrevsc.teste.repositories;
 
-public interface PagamentoApiRepository{
-    
+import com.andrevsc.teste.models.Pagamento;
+
+public interface PagamentoApiRepository {
+    boolean processarPagamento(Pagamento pagamento);
 }
