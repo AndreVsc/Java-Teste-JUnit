@@ -10,6 +10,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @SuppressWarnings("deprecation")
     @ExceptionHandler(CnhInvalidaException.class)
     public ResponseEntity<Map<String, String>> handleCnhInvalida(CnhInvalidaException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("erro", ex.getMessage()));
