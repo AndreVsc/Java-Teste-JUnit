@@ -1,4 +1,4 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.integration.services;
 
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.dtos.ReservaResponseDTO;
@@ -14,21 +14,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@DisplayName("CT08 – PIX aprovado aplica desconto de 10% e confirma reserva")
-class ReservaServiceCT08Test extends ReservaServiceCTBase {
+@DisplayName("CT09 – cartão à vista aprovado aplica desconto de 5% e confirma reserva")
+class ReservaServiceCT09Test extends ReservaServiceCTBase {
 
     @Test
-    void CT08_pixAprovado_deveAplicarDescontoEConfirmarReserva() {
+    void CT09_cartaoAVistaAprovado_deveAplicarDescontoEConfirmarReserva() {
         when(carroRepository.findById(CARRO_ID)).thenReturn(Optional.of(carroDisponivel()));
-        when(detranApiRepository.isCnhValida(anyString())).thenReturn(true);
-        when(pagamentoApiRepository.processarPagamento(any())).thenReturn(true);
+        when(detranApiGateway.isCnhValida(anyString())).thenReturn(true);
+        when(pagamentoApiGateway.processarPagamento(any())).thenReturn(true);
 
         ReservaRequestDTO request = requestValido();
-        request.getPagamento().setFormaPagamento(FormaPagamento.PIX);
+        request.getPagamento().setFormaPagamento(FormaPagamento.CARTAO_CREDITO_VISTA);
 
         ReservaResponseDTO response = service.reservarCarro(request);
 
         assertThat(response.getStatus()).isEqualTo(StatusReserva.RESERVA_CONFIRMADA);
-        assertThat(response.getValorFinal()).isEqualTo(VALOR_PIX);
+        assertThat(response.getValorFinal()).isEqualTo(VALOR_CARTAO_VISTA);
     }
 }

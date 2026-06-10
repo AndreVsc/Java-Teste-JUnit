@@ -47,10 +47,7 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservaResponseDTO> reservar(
-        @RequestBody ReservaRequestDTO request,
-        @RequestHeader(value = "X-Test-Scenario", required = false) String testScenario
-    ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.reservarCarro(request, testScenario));
+    public ResponseEntity<ReservaResponseDTO> reservar(@RequestBody ReservaRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.reservarCarro(request));
     }
 }

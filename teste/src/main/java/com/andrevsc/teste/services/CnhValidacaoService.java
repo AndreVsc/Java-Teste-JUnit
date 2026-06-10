@@ -1,32 +1,24 @@
 package com.andrevsc.teste.services;
 
 import com.andrevsc.teste.exceptions.CnhInvalidaException;
-import com.andrevsc.teste.repositories.DetranApiRepository;
+import com.andrevsc.teste.gateways.DetranApiGateway;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CnhValidacaoService {
 
-    private final DetranApiRepository detranApiRepository;
+    private final DetranApiGateway detranApiGateway;
 
-    public CnhValidacaoService(DetranApiRepository detranApiRepository) {
-        this.detranApiRepository = detranApiRepository;
+    public CnhValidacaoService(DetranApiGateway detranApiGateway) {
+        this.detranApiGateway = detranApiGateway;
     }
 
     // RN01: todo condutor deve ter CNH válida (consultada via API Detran)
     public void validar(String numeroCnh, String nomeTitular) {
-        validar(numeroCnh, nomeTitular, null);
-    }
-
-    public void validar(String numeroCnh, String nomeTitular, String testScenario) {
         if (numeroCnh == null || numeroCnh.isBlank()) {
             throw new CnhInvalidaException("CNH não informada para: " + nomeTitular);
         }
-        boolean cnhValida = testScenario == null
-            ? detranApiRepository.isCnhValida(numeroCnh)
-            : detranApiRepository.isCnhValida(numeroCnh, testScenario);
-
-        if (!cnhValida) {
+        if (!detranApiGateway.isCnhValida(numeroCnh)) {
             throw new CnhInvalidaException("CNH inválida para: " + nomeTitular);
         }
     }

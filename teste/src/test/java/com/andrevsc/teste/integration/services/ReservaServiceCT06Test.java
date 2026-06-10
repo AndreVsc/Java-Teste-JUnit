@@ -1,4 +1,4 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.integration.services;
 
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.dtos.ReservaResponseDTO;
@@ -20,8 +20,8 @@ class ReservaServiceCT06Test extends ReservaServiceCTBase {
     @Test
     void CT06_parcelamentoAprovado_deveConfirmarReserva() {
         when(carroRepository.findById(CARRO_ID)).thenReturn(Optional.of(carroDisponivel()));
-        when(detranApiRepository.isCnhValida(anyString())).thenReturn(true);
-        when(pagamentoApiRepository.processarPagamento(any())).thenReturn(true);
+        when(detranApiGateway.isCnhValida(anyString())).thenReturn(true);
+        when(pagamentoApiGateway.processarPagamento(any())).thenReturn(true);
 
         ReservaRequestDTO request = requestValido();
         request.getPagamento().setFormaPagamento(FormaPagamento.CARTAO_CREDITO_PARCELADO);

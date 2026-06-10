@@ -9,6 +9,7 @@ import com.andrevsc.teste.repositories.CarroRepository;
 import com.andrevsc.teste.repositories.ReservaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,13 +31,8 @@ public class ReservaService {
     }
 
     public ReservaResponseDTO reservarCarro(ReservaRequestDTO request) {
-        return reservarCarro(request, null);
-    }
-
-    public ReservaResponseDTO reservarCarro(ReservaRequestDTO request, String testScenario) {
         validarDadosBasicos(request);
 
-        // Nó 3: verifica disponibilidade
         Carro carro = carroRepository.findById(request.getCarroId())
             .orElseThrow(() -> new CarroIndisponivelException("Carro não encontrado: " + request.getCarroId()));
 
@@ -46,28 +42,23 @@ public class ReservaService {
 
         Cliente cliente = new Cliente(request.getClienteId(), "Cliente", "", "", "CNH_CLIENTE");
 
-        // Nó 4: outro condutor (fluxo alternativo)
-        Condutor outroCondutor = null;
         if (request.getOutroCondutor() != null) {
-            outroCondutor = new Condutor(
+            Condutor outroCondutor = new Condutor(
                 UUID.randomUUID().toString(),
                 request.getOutroCondutor().getNome(),
                 request.getOutroCondutor().getNumeroCnh()
             );
-            cnhValidacaoService.validar(outroCondutor.getNumeroCnh(), outroCondutor.getNome(), testScenario);
+            cnhValidacaoService.validar(outroCondutor.getNumeroCnh(), outroCondutor.getNome());
         }
 
-        // Nó 5: valida CNH do condutor principal
-        cnhValidacaoService.validar(cliente.getNumeroCnh(), cliente.getNome(), testScenario);
+        cnhValidacaoService.validar(cliente.getNumeroCnh(), cliente.getNome());
 
         Reserva reserva = new Reserva(request.getCarroId(), cliente, carro, request.getDataInicio(), request.getDataFim());
-        reserva.setOutroCondutor(outroCondutor);
         reserva.setValorCalculado(reserva.calcularDias() * carro.getPrecoDiaria());
         reserva.setStatus(StatusReserva.AGUARDANDO_PAGAMENTO);
 
-        // Nós 6-11: pagamento com descontos (lança PagamentoRecusadoException se reprovado)
         try {
-            reserva.setPagamento(pagamentoService.processarPagamento(request.getPagamento(), reserva.getValorCalculado(), testScenario));
+            reserva.setPagamento(pagamentoService.processarPagamento(request.getPagamento(), reserva.getValorCalculado()));
             reserva.setStatus(StatusReserva.RESERVA_CONFIRMADA);
         } catch (Exception e) {
             reserva.setStatus(StatusReserva.RESERVA_CANCELADA);
@@ -75,7 +66,6 @@ public class ReservaService {
             throw e;
         }
 
-        // Nó 13: confirma reserva
         carro.setDisponivel(false);
         carroRepository.save(carro);
 
@@ -110,7 +100,7 @@ public class ReservaService {
             .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: " + id));
     }
 
-    public java.util.List<Reserva> listarTodas() {
+    public List<Reserva> listarTodas() {
         return reservaRepository.findAll();
     }
 }
