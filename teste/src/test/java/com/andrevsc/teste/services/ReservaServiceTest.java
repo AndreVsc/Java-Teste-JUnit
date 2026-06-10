@@ -4,10 +4,10 @@ import com.andrevsc.teste.dtos.CondutorDTO;
 import com.andrevsc.teste.dtos.PagamentoDTO;
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.models.enums.FormaPagamento;
+import com.andrevsc.teste.gateways.DetranApiGateway;
+import com.andrevsc.teste.gateways.PagamentoApiGateway;
 import com.andrevsc.teste.repositories.CarroRepository;
 import com.andrevsc.teste.repositories.ReservaRepository;
-import com.andrevsc.teste.repositories.DetranApiRepository;
-import com.andrevsc.teste.repositories.PagamentoApiRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +39,10 @@ class ReservaServiceTest {
     private ReservaRepository reservaRepository;
 
     @Mock
-    private DetranApiRepository detranApiRepository;
+    private DetranApiGateway detranApiGateway;
 
     @Mock
-    private PagamentoApiRepository pagamentoApiRepository;
+    private PagamentoApiGateway pagamentoApiGateway;
 
     private ReservaService service;
 
@@ -53,8 +53,8 @@ class ReservaServiceTest {
 
     @BeforeEach
     void setUp() {
-        CnhValidacaoService cnhValidacaoService = new CnhValidacaoService(detranApiRepository);
-        PagamentoService pagamentoService = new PagamentoService(pagamentoApiRepository);
+        CnhValidacaoService cnhValidacaoService = new CnhValidacaoService(detranApiGateway);
+        PagamentoService pagamentoService = new PagamentoService(pagamentoApiGateway);
         service = new ReservaService(carroRepository, reservaRepository, cnhValidacaoService, pagamentoService);
     }
 

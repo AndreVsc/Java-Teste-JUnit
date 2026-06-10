@@ -1,14 +1,14 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.integration.services;
 
 import com.andrevsc.teste.dtos.CondutorDTO;
 import com.andrevsc.teste.dtos.PagamentoDTO;
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.models.Carro;
 import com.andrevsc.teste.models.enums.FormaPagamento;
+import com.andrevsc.teste.gateways.DetranApiGateway;
+import com.andrevsc.teste.gateways.PagamentoApiGateway;
 import com.andrevsc.teste.repositories.CarroRepository;
 import com.andrevsc.teste.repositories.ReservaRepository;
-import com.andrevsc.teste.repositories.DetranApiRepository;
-import com.andrevsc.teste.repositories.PagamentoApiRepository;
 import com.andrevsc.teste.services.CnhValidacaoService;
 import com.andrevsc.teste.services.PagamentoService;
 import com.andrevsc.teste.services.ReservaService;
@@ -29,10 +29,10 @@ abstract class ReservaServiceCTBase {
     protected ReservaRepository reservaRepository;
 
     @Mock
-    protected DetranApiRepository detranApiRepository;
+    protected DetranApiGateway detranApiGateway;
 
     @Mock
-    protected PagamentoApiRepository pagamentoApiRepository;
+    protected PagamentoApiGateway pagamentoApiGateway;
 
     protected ReservaService service;
 
@@ -46,8 +46,8 @@ abstract class ReservaServiceCTBase {
 
     @BeforeEach
     void setUp() {
-        CnhValidacaoService cnhValidacaoService = new CnhValidacaoService(detranApiRepository);
-        PagamentoService pagamentoService = new PagamentoService(pagamentoApiRepository);
+        CnhValidacaoService cnhValidacaoService = new CnhValidacaoService(detranApiGateway);
+        PagamentoService pagamentoService = new PagamentoService(pagamentoApiGateway);
         service = new ReservaService(carroRepository, reservaRepository, cnhValidacaoService, pagamentoService);
     }
 

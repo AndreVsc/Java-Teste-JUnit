@@ -1,4 +1,4 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.integration.services;
 
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.models.enums.FormaPagamento;
@@ -22,7 +22,7 @@ class ReservaServiceCT07Test extends ReservaServiceCTBase {
     @Test
     void CT07_parcelasAcimaDoLimite_deveLancarIllegalArgumentException() {
         when(carroRepository.findById(CARRO_ID)).thenReturn(Optional.of(carroDisponivel()));
-        when(detranApiRepository.isCnhValida(anyString())).thenReturn(true);
+        when(detranApiGateway.isCnhValida(anyString())).thenReturn(true);
 
         ReservaRequestDTO request = requestValido();
         request.getPagamento().setFormaPagamento(FormaPagamento.CARTAO_CREDITO_PARCELADO);
@@ -32,7 +32,7 @@ class ReservaServiceCT07Test extends ReservaServiceCTBase {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("parcelas");
 
-        verify(pagamentoApiRepository, never()).processarPagamento(any());
+        verify(pagamentoApiGateway, never()).processarPagamento(any());
         verify(reservaRepository).save(argThat(r -> r.getStatus() == StatusReserva.RESERVA_CANCELADA));
     }
 }

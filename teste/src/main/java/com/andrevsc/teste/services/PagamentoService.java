@@ -2,9 +2,9 @@ package com.andrevsc.teste.services;
 
 import com.andrevsc.teste.dtos.PagamentoDTO;
 import com.andrevsc.teste.exceptions.PagamentoRecusadoException;
+import com.andrevsc.teste.gateways.PagamentoApiGateway;
 import com.andrevsc.teste.models.Pagamento;
 import com.andrevsc.teste.models.enums.FormaPagamento;
-import com.andrevsc.teste.repositories.PagamentoApiRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -14,10 +14,10 @@ public class PagamentoService {
 
     private static final int MAX_PARCELAS = 5;
 
-    private final PagamentoApiRepository pagamentoApiRepository;
+    private final PagamentoApiGateway pagamentoApiGateway;
 
-    public PagamentoService(PagamentoApiRepository pagamentoApiRepository) {
-        this.pagamentoApiRepository = pagamentoApiRepository;
+    public PagamentoService(PagamentoApiGateway pagamentoApiGateway) {
+        this.pagamentoApiGateway = pagamentoApiGateway;
     }
 
     // RN03: Pix → 10% desc; cartão à vista → 5% desc; parcelado → sem desconto
@@ -30,10 +30,6 @@ public class PagamentoService {
     }
 
     public Pagamento processarPagamento(PagamentoDTO dto, double valorOriginal) {
-        return processarPagamento(dto, valorOriginal, null);
-    }
-
-    public Pagamento processarPagamento(PagamentoDTO dto, double valorOriginal, String testScenario) {
         // RN02: máximo de 5 parcelas
         if (dto.getFormaPagamento() == FormaPagamento.CARTAO_CREDITO_PARCELADO
                 && dto.getNumeroParcelas() > MAX_PARCELAS) {
@@ -50,11 +46,7 @@ public class PagamentoService {
         );
         pagamento.setValorFinal(valorFinal);
 
-        boolean pagamentoAprovado = testScenario == null
-            ? pagamentoApiRepository.processarPagamento(pagamento)
-            : pagamentoApiRepository.processarPagamento(pagamento, testScenario);
-
-        if (!pagamentoAprovado) {
+        if (!pagamentoApiGateway.processarPagamento(pagamento)) {
             throw new PagamentoRecusadoException("Pagamento não aprovado pela operadora.");
         }
 

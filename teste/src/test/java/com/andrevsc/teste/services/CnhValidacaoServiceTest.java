@@ -1,7 +1,7 @@
 package com.andrevsc.teste.services;
 
 import com.andrevsc.teste.exceptions.CnhInvalidaException;
-import com.andrevsc.teste.repositories.DetranApiRepository;
+import com.andrevsc.teste.gateways.DetranApiGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 /**
  * Testes de unidade para CnhValidacaoService.
  *
- * MOCK: DetranApiRepository — simula a API externa do Detran
+ * MOCK: DetranApiGateway — simula a API externa do Detran
  *       sem fazer nenhuma chamada de rede real.
  *       Configuramos o comportamento desejado com when(...).thenReturn(...).
  *
@@ -26,23 +26,21 @@ import static org.mockito.Mockito.*;
 @DisplayName("CnhValidacaoService — RN01")
 class CnhValidacaoServiceTest {
 
-    // MOCK: substitui a dependência externa DetranApiRepository
     @Mock
-    private DetranApiRepository detranApiRepository;
+    private DetranApiGateway detranApiGateway;
 
     private CnhValidacaoService service;
 
     @BeforeEach
     void setUp() {
-        // Injeta o mock manualmente via construtor (sem Spring)
-        service = new CnhValidacaoService(detranApiRepository);
+        service = new CnhValidacaoService(detranApiGateway);
     }
 
     @Test
     @DisplayName("CNH válida: não lança exceção")
     void cnhValida_naoLancaExcecao() {
         // STUB inline: Detran retorna true para esta CNH
-        when(detranApiRepository.isCnhValida("CNH123")).thenReturn(true);
+        when(detranApiGateway.isCnhValida("CNH123")).thenReturn(true);
 
         assertThatCode(() -> service.validar("CNH123", "João"))
             .doesNotThrowAnyException();
@@ -55,7 +53,7 @@ class CnhValidacaoServiceTest {
     @DisplayName("CNH inválida: lança CnhInvalidaException")
     void cnhInvalida_lancaExcecao() {
         // STUB inline: Detran retorna false → CNH bloqueada/inválida
-        when(detranApiRepository.isCnhValida("CNH_INVALIDA")).thenReturn(false);
+        when(detranApiGateway.isCnhValida("CNH_INVALIDA")).thenReturn(false);
 
         assertThatThrownBy(() -> service.validar("CNH_INVALIDA", "Maria"))
             .isInstanceOf(CnhInvalidaException.class)

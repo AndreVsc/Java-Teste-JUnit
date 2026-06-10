@@ -1,4 +1,4 @@
-package com.andrevsc.teste.units.services;
+package com.andrevsc.teste.integration.services;
 
 import com.andrevsc.teste.dtos.ReservaRequestDTO;
 import com.andrevsc.teste.exceptions.CnhInvalidaException;
@@ -20,7 +20,7 @@ class ReservaServiceCT01Test extends ReservaServiceCTBase {
     @Test
     void CT01_cnhInvalidaDoCondutorPrincipal_deveLancarCnhInvalidaException() {
         when(carroRepository.findById(CARRO_ID)).thenReturn(Optional.of(carroDisponivel()));
-        when(detranApiRepository.isCnhValida(anyString())).thenReturn(false);
+        when(detranApiGateway.isCnhValida(anyString())).thenReturn(false);
 
         ReservaRequestDTO request = requestValido();
 
