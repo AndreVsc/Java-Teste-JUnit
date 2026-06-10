@@ -15,10 +15,18 @@ public class CnhValidacaoService {
 
     // RN01: todo condutor deve ter CNH válida (consultada via API Detran)
     public void validar(String numeroCnh, String nomeTitular) {
+        validar(numeroCnh, nomeTitular, null);
+    }
+
+    public void validar(String numeroCnh, String nomeTitular, String testScenario) {
         if (numeroCnh == null || numeroCnh.isBlank()) {
             throw new CnhInvalidaException("CNH não informada para: " + nomeTitular);
         }
-        if (!detranApiRepository.isCnhValida(numeroCnh)) {
+        boolean cnhValida = testScenario == null
+            ? detranApiRepository.isCnhValida(numeroCnh)
+            : detranApiRepository.isCnhValida(numeroCnh, testScenario);
+
+        if (!cnhValida) {
             throw new CnhInvalidaException("CNH inválida para: " + nomeTitular);
         }
     }

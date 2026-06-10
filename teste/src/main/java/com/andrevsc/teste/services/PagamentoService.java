@@ -30,6 +30,10 @@ public class PagamentoService {
     }
 
     public Pagamento processarPagamento(PagamentoDTO dto, double valorOriginal) {
+        return processarPagamento(dto, valorOriginal, null);
+    }
+
+    public Pagamento processarPagamento(PagamentoDTO dto, double valorOriginal, String testScenario) {
         // RN02: máximo de 5 parcelas
         if (dto.getFormaPagamento() == FormaPagamento.CARTAO_CREDITO_PARCELADO
                 && dto.getNumeroParcelas() > MAX_PARCELAS) {
@@ -46,7 +50,11 @@ public class PagamentoService {
         );
         pagamento.setValorFinal(valorFinal);
 
-        if (!pagamentoApiRepository.processarPagamento(pagamento)) {
+        boolean pagamentoAprovado = testScenario == null
+            ? pagamentoApiRepository.processarPagamento(pagamento)
+            : pagamentoApiRepository.processarPagamento(pagamento, testScenario);
+
+        if (!pagamentoAprovado) {
             throw new PagamentoRecusadoException("Pagamento não aprovado pela operadora.");
         }
 

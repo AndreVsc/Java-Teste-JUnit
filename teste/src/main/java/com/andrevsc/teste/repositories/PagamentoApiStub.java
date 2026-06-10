@@ -15,8 +15,35 @@ import org.springframework.stereotype.Component;
 public class PagamentoApiStub implements PagamentoApiRepository {
 
     @Override
-    public boolean processarPagamento(Pagamento pagamento) {
-        // Stub: sempre retorna true (pagamento aprovado) em ambiente de desenvolvimento
+    public boolean processarPagamento(Pagamento pagamento, String testScenario) {
+        if (pagamento == null) {
+            return false;
+        }
+
+        if (pagamento.getFormaPagamento() == com.andrevsc.teste.models.enums.FormaPagamento.CARTAO_CREDITO_VISTA) {
+            return false; // CT03: pagamento à vista recusado
+        }
+
+        if ("ct04".equalsIgnoreCase(testScenario)
+                || "ct04-pagamento-pix-recusado".equalsIgnoreCase(testScenario)) {
+            if (pagamento.getFormaPagamento() == com.andrevsc.teste.models.enums.FormaPagamento.PIX) {
+                return false; // CT04: PIX recusado
+            }
+        }
+
+        if ("ct05".equalsIgnoreCase(testScenario)
+                || "ct05-pagamento-parcelado-3x-recusado".equalsIgnoreCase(testScenario)) {
+            if (pagamento.getFormaPagamento() == com.andrevsc.teste.models.enums.FormaPagamento.CARTAO_CREDITO_PARCELADO
+                    && pagamento.getNumeroParcelas() == 3) {
+                return false; // CT05: parcelamento 3x recusado
+            }
+        }
+
+        if ("ct03-pagamento-recusado".equalsIgnoreCase(testScenario)
+                || "ct03".equalsIgnoreCase(testScenario)) {
+            return false;
+        }
+
         return true;
     }
 }

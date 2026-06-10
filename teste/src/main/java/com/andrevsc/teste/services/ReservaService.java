@@ -30,6 +30,10 @@ public class ReservaService {
     }
 
     public ReservaResponseDTO reservarCarro(ReservaRequestDTO request) {
+        return reservarCarro(request, null);
+    }
+
+    public ReservaResponseDTO reservarCarro(ReservaRequestDTO request, String testScenario) {
         validarDadosBasicos(request);
 
         // Nó 3: verifica disponibilidade
@@ -50,11 +54,11 @@ public class ReservaService {
                 request.getOutroCondutor().getNome(),
                 request.getOutroCondutor().getNumeroCnh()
             );
-            cnhValidacaoService.validar(outroCondutor.getNumeroCnh(), outroCondutor.getNome());
+            cnhValidacaoService.validar(outroCondutor.getNumeroCnh(), outroCondutor.getNome(), testScenario);
         }
 
         // Nó 5: valida CNH do condutor principal
-        cnhValidacaoService.validar(cliente.getNumeroCnh(), cliente.getNome());
+        cnhValidacaoService.validar(cliente.getNumeroCnh(), cliente.getNome(), testScenario);
 
         Reserva reserva = new Reserva(request.getCarroId(), cliente, carro, request.getDataInicio(), request.getDataFim());
         reserva.setOutroCondutor(outroCondutor);
@@ -63,7 +67,7 @@ public class ReservaService {
 
         // Nós 6-11: pagamento com descontos (lança PagamentoRecusadoException se reprovado)
         try {
-            reserva.setPagamento(pagamentoService.processarPagamento(request.getPagamento(), reserva.getValorCalculado()));
+            reserva.setPagamento(pagamentoService.processarPagamento(request.getPagamento(), reserva.getValorCalculado(), testScenario));
             reserva.setStatus(StatusReserva.RESERVA_CONFIRMADA);
         } catch (Exception e) {
             reserva.setStatus(StatusReserva.RESERVA_CANCELADA);

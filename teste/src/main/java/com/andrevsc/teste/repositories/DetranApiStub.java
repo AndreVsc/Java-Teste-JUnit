@@ -14,8 +14,30 @@ import org.springframework.stereotype.Component;
 public class DetranApiStub implements DetranApiRepository {
 
     @Override
-    public boolean isCnhValida(String numeroCnh) {
-        // Stub: sempre retorna true (CNH válida) em ambiente de desenvolvimento
+    public boolean isCnhValida(String numeroCnh, String testScenario) {
+        // Stub: considera qualquer CNH válida, exceto casos específicos de teste.
+        if (numeroCnh == null || numeroCnh.isBlank()) {
+            return false;
+        }
+
+        if ("ct01".equalsIgnoreCase(testScenario)
+                || "ct01-cnh-principal-invalida".equalsIgnoreCase(testScenario)) {
+            if (numeroCnh.equals("CNH_CLIENTE")) {
+                return false; // CT01: CNH do condutor principal inválida
+            }
+        }
+
+        if (numeroCnh.equals("CNH_CLIENTE_INVALIDA")) {
+            return false; // CT01 (alternativo): cliente com CNH inválida explícita
+        }
+
+        if (numeroCnh.equals("CNH_LUCAS")) {
+            if ("ct02-outro-condutor-invalido".equalsIgnoreCase(testScenario)
+                    || "ct02".equalsIgnoreCase(testScenario)) {
+                return false; // CT02: outro condutor inválido
+            }
+        }
+
         return true;
     }
 }
