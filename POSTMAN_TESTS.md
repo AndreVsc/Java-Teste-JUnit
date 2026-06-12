@@ -14,7 +14,8 @@ Cabeçalhos obrigatórios:
 
 Cabeçalho de teste opcional para cenário:
 
-- `X-Test-Scenario: ct01 | ct02 | ct04 | ct05`
+- `X-Test-Scenario: ct01 | ct02 | ct03 | ct04 | ct05 | ct09`
+- `X-Test-Reset-State: true` (use para restaurar o estado em memória antes de cada CT)
 
 Também existem endpoints de consulta:
 
@@ -65,10 +66,11 @@ Use este JSON como modelo para testes básicos:
     "numeroParcelas": 1
   }
 }
-
 ```
 
 > Observação: `dataFim` deve ser posterior a `dataInicio`.
+>
+> Para tornar cada CT independente no Postman, inclua sempre `X-Test-Reset-State: true` na requisição. Isso limpa as reservas em memória e torna `carro-01` disponível novamente antes do teste.
 
 ---
 
@@ -85,7 +87,7 @@ Validar que a reserva é rejeitada quando a CNH do condutor principal está inv�
 * Headers:
 * `Content-Type: application/json`
 * `X-Test-Scenario: ct01`
-
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -129,7 +131,7 @@ Validar que a reserva é rejeitada quando a CNH do outro condutor está inválid
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-* `X-Test-Scenario: ct02`
+* `X-Test-Scenario: ct02`* `X-Test-Reset-State: true`* `X-Test-Reset-State: true`
 
 
 * Body:
@@ -178,7 +180,8 @@ Validar que a reserva é cancelada quando o pagamento à vista é recusado.
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-
+* `X-Test-Scenario: ct03`
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -223,6 +226,7 @@ Validar que a reserva é cancelada quando o pagamento PIX é recusado.
 * Headers:
 * `Content-Type: application/json`
 * `X-Test-Scenario: ct04`
+* `X-Test-Reset-State: true`
 
 
 * Body:
@@ -268,6 +272,7 @@ Validar que a reserva é cancelada quando o parcelamento em 3x é recusado.
 * Headers:
 * `Content-Type: application/json`
 * `X-Test-Scenario: ct05`
+* `X-Test-Reset-State: true`
 
 
 * Body:
@@ -312,7 +317,7 @@ Validar que a reserva é confirmada quando o pagamento parcelado em 3x é aprova
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -362,7 +367,7 @@ Validar que a API retorna erro quando o parcelamento excede 5 parcelas.
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -406,7 +411,7 @@ Validar desconto de 10% em pagamento PIX e reserva confirmada.
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -456,7 +461,8 @@ Validar desconto de 5% em pagamento cartão à vista e reserva confirmada.
 * URL: `http://localhost:8080/api/reservas`
 * Headers:
 * `Content-Type: application/json`
-
+* `X-Test-Scenario: ct09`
+* `X-Test-Reset-State: true`
 
 * Body:
 
@@ -509,6 +515,6 @@ Esses endpoints ajudam a confirmar se a reserva foi criada ou se houve erro.
 
 * O carro `carro-01` é criado automaticamente quando a aplicação sobe.
 * Os cabeçalhos `X-Test-Scenario` não alteram a lógica de produção: eles só ativam os cenários de falha do stub de testes.
-* CT06, CT08 e CT09 confirmam a reserva e deixam `carro-01` indisponível na sessão atual. Reinicie a aplicação para resetar o estado in-memory antes de rodar novamente.
+* CT06, CT08 e CT09 confirmam a reserva e deixam `carro-01` indisponível na sessão atual. Use `X-Test-Reset-State: true` na próxima requisição para restaurar o estado sem reiniciar a aplicação.
 * CT03, CT04, CT05 e CT07 falham antes de confirmar a reserva, então o carro permanece disponível.
 

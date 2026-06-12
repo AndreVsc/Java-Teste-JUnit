@@ -21,7 +21,15 @@ public class PagamentoApiStub implements PagamentoApiRepository {
         }
 
         if (pagamento.getFormaPagamento() == com.andrevsc.teste.models.enums.FormaPagamento.CARTAO_CREDITO_VISTA) {
-            return false; // CT03: pagamento à vista recusado
+            if ("ct03".equalsIgnoreCase(testScenario)
+                    || "ct03-pagamento-recusado".equalsIgnoreCase(testScenario)) {
+                return false; // CT03: pagamento à vista recusado
+            }
+            if ("ct09".equalsIgnoreCase(testScenario)
+                    || "ct09-cartao-a-vista-aprovado".equalsIgnoreCase(testScenario)) {
+                return true; // CT09: cartão à vista aprovado
+            }
+            return false; // cartão à vista é recusado por padrão no stub
         }
 
         if ("ct04".equalsIgnoreCase(testScenario)

@@ -105,6 +105,12 @@ public class ReservaService {
             throw new IllegalArgumentException("Dados de pagamento são obrigatórios.");
     }
 
+    public void resetTestState() {
+        reservaRepository.clear();
+        carroRepository.clear();
+        carroRepository.save(new Carro("carro-01", "Civic", true, 200.0));
+    }
+
     public Reserva obterPorId(String id) {
         return reservaRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: " + id));
